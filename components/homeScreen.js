@@ -1,10 +1,11 @@
+/* eslint-disable semi */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react'
 import {TextInput, Button, Card, Title} from 'react-native-paper'
 import {View, Text, StyleSheet, FlatList, Image} from 'react-native'
 import Header from './header'
 
-const HomeScreen = () => {
+const HomeScreen = props => {
   const [info, setInfo] = useState({
     name: 'loading!',
     temp: 'loading',
@@ -16,11 +17,15 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getWeather()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getWeather = () => {
+    let weatherCity
+    const {city} = props.route.params
+    weatherCity = city
     fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=london&APPID=b7fcbb72cd79d602a091d947d13b46ed&units=metric`,
+      `https://api.openweathermap.org/data/2.5/weather?q=${weatherCity}&APPID=b7fcbb72cd79d602a091d947d13b46ed&units=metric`,
     )
       .then(data => data.json())
       .then(results => {
@@ -32,6 +37,10 @@ const HomeScreen = () => {
           icon: results.weather[0].icon,
         })
       })
+  }
+
+  if (props.route.params.city !== 'london') {
+    getWeather()
   }
 
   return (
